@@ -156,3 +156,9 @@ The task continues to get divided until it becomes so trivial that a single proc
 P5 and P6 will do the same and send them to P2
 
 P1 and P2 will compute their sum and sends them to P0 and P0 will compute all the final result.
+
+
+# A Special Case  (Remainder):
+
+So let's assume that we have an array and we wish to divide it using either the embarassingly parallel strategy or the divide and conquer strategy, that should be easy right? Well what if the array cannot be easily divided. So if I have an array of 125 elements and 4 processes, I can't really divide the array equally. I could even miss a part of the array and some of them might not be accessed by the processes. So 125/4=31.25 or 31 if we're dealing with integers. We might miss a part of the array due to this inaccuracy. So what we can do to fix this is we can compute the remainder. We can compute the number of elements n (size of array/nb of processes), then we compute the remainder of this division m (size of array % nb of processes), then we can send n+m elements. That way we can be inclusive of all elements and ensure all elements of the array are accessed.
+
