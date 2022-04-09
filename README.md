@@ -164,4 +164,17 @@ So let's assume that we have an array and we wish to divide it using either the 
 
 # Dynamic Task Allocation:
 
-In previous strategies and topologies (ring, tree, linear etc.) we have made an assumption. We assumed that all processes exert the same computational effort however that is not always the case. We can take a simple example which is to compute the primality (if a number is prime or not) of elements in an array. We create a boolean function check_primality(int n) to create to check each numbe if it is prime or not. It loop from 2 till n and checks if n%i==0. It returns 1 for prime number and 0 if not prime. For numbers such as 2, this can be very fast computation however for larger numbers this can take more time. Thus processes will have inequal division of computational effort. *continue later*
+In previous strategies and topologies (ring, tree, linear etc.) we have made an assumption. We assumed that all processes exert the same computational effort however that is not always the case. We can take a simple example which is to compute the primality (if a number is prime or not) of elements in an array. We create a boolean function check_primality(int n) to check each number if it is prime or not. It loops from 2 till n and checks if n%i==0. It returns 1 for prime number and 0 if not prime. For numbers such as 2, this can be very fast computation however for larger numbers this can take more time. Thus processes will have inequal division of computational effort. 
+
+To solve this problem we use dynamic task allocation. Rather than dividing tasks statically, we divide them dynamically. What does this mean? Look at the previous example. In the previous example, we would embarrisingly divide the array and into portions and give them to each process. So an array having 2 3 4 will compute faster than an array have 123456 39871245 and 419876654210111. How do I solve them. I make sure each element in the array is treated as a single task. Rather than giving each process a portion of the array, we send individual elements of this array. We create a master worker system such that process 0 would send an element to a process i, process i will compute the primality of the element and send the result back to process 0. Process 0 will receive the result, store it and send a new element to process i. We use if(rank==0) -> loop to send a task and receive result
+
+We send result from other processes. Process 0 has to receive results from any process. How do we do that? MPI_ANY_SOURCE...we use it in the MPI_Recv as our sending process
+
+After receive result we need to send another task to the process that finished. We cannot know which process sent since we are using MPI_ANY_SOURCE...to solve this issue we use MPI_Status...the status will tell me which process sent the result
+int bla=status.MPI_Source
+
+we declare a count called tasks_completed which is incremented everytime process 0 sends a task. This counter will continue the loop till it reaches the num_elements.
+
+at the end of process 0 we send a termination flag (-100) to indicate that all tasks have been sent and all results have been computed. This is important to inform all worker processes to terminate as all task have been completed.
+
+The workers will recv their tasks from process 0 and send the results back once primality has been computed. They terminate once the termination flag is sent!
