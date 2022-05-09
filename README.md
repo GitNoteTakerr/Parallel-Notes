@@ -179,11 +179,11 @@ at the end of process 0 we send a termination flag (-100) to indicate that all t
 
 The workers will recv their tasks from process 0 and send the results back once primality has been computed. They terminate once the termination flag is sent! In the case I wanted to send more to than 1 value or something more complex, I can define my own MPI_Datatype. So I can create my own struct that contains certain values or attributes and call it task. I can then store the datatypes of these attributes, their offset in memory (offsetof(....)) and their block size (1 if it is a single value, different for arrays). I can then use this newly defined datatype and send and recv it instead of usig a single int. This is ueful if my task is more complex and relies on more values and numbers, like if I have to compute multiple results, 
 
-#Programming with Shared Memory:
+# Programming with Shared Memory:
 
 When we're talking about message passing, all data is sent using messages. We cannot store the data in a location in memory and assume all processes have access to it. Each process will have its own memory space, independent of the other processes. When we use shared memory, we are giving all processes access to a single memory space. Programming with shared memory can be more convenient but it can lead to deadlock and race conditions. We have multiple processing units (multiple processes or multiple cores) have access to a shared bus which what they use to communicate and share data. Programming with shared memories can be achieved with multiple processes, or multiple threads...some languages automitcally support shared memeory like ada while other languages have compiler directives that support shared memory and parallel computation.
 
-#Using Heavy Weight Processes:
+# Using Heavy Weight Processes:
 
 this can be done with forking. pid=fork(); will create a child process that by default will be an exact replica of the parent process but can do soemthing different using control statements.
 
@@ -198,7 +198,7 @@ wait(NULL);
 
 threads are superior lol!
 
-#Pthreads:
+# Pthreads:
 
 when forking processes, all components of the process will be duplicated. The heap, the stack, the code etc....however, a thread is a part of the process, so it doesn't have to duplicate everything. It doesn't have to duplicate the code, it doesn't have to duplicate the heap, it has to duplicate the stack tho. So threads will be a more efficient solution. Processes are useful in some cases. In threads, if a single thread crashes, the process crashes. If a single process crash, the others can still continue the computation.
 
